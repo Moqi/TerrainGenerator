@@ -4,31 +4,31 @@ using System.Collections;
 public class TerrainGenerator : MonoBehaviour {
 	
 	Color32[] cols;
-	int width=128;
-	int height=128;
+	int width=2048;
+	int height=2048;
 	float WidthHeightP;
-	int GRAIN=8;
+	int GRAIN=4;
 	Texture2D texture;
 	float R;
 	
 	void Start () 
 	{
 		Terrain terrain = FindObjectOfType<Terrain> ();
-		int resolution = 128;
+		int resolution = width;
 		float[,] heights = new float[resolution,resolution]; 
 		WidthHeightP= (float)width+height;
 		texture = new Texture2D(width, height);
 		cols = new Color32[width*height];
 		drawPlasma(width, height);
 		texture.SetPixels32(cols);
-		R = 0.2f;
-		for (int i=0; i<128; i++) {
-			for (int k=0;k<128; k++){
+		R = 0.1f;
+		for (int i=0; i<width; i++) {
+			for (int k=0;k<height; k++){
 				heights[i,k] = texture.GetPixel(i,k).grayscale*R;
 			}
 		}
 						
-		terrain.terrainData.size = new Vector3(128, 128, 128);
+		terrain.terrainData.size = new Vector3(width, width, height);
 		terrain.terrainData.heightmapResolution = resolution;
 		terrain.terrainData.SetHeights(0, 0, heights);
 	}
@@ -51,7 +51,7 @@ public class TerrainGenerator : MonoBehaviour {
 				}
 			}
 			
-			terrain.terrainData.size = new Vector3(128, 128, 128);
+			terrain.terrainData.size = new Vector3(width, width, width);
 			terrain.terrainData.heightmapResolution = resolution;
 			terrain.terrainData.SetHeights(0, 0, heights);
 
