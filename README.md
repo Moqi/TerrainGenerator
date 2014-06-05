@@ -5,8 +5,8 @@ Unity3D terrain generation
 
 We will use a diamond-square way of generating terrain
 
-There are two parameters, which regulates terrain:
-  -GRAIN regulates roughness
+There are two parameters, which regulates terrain:\n
+  -GRAIN regulates roughness\n
   -R regulates rockiness
   
 For example if GRAIN = 8 and R = 0.01 it will be a desert
