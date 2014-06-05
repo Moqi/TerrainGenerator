@@ -34,7 +34,7 @@ public class TerrainGenerator : MonoBehaviour {
 		texture.Apply();
 
 		//Starting shader
-		material.SetTexture ("_HeightTex", texture);
+		material.SetTexture ("_HeightTex", texture); //it isn't working without shader. Delete it before using
 
 		//Changing terrain from heightmap
 		for (int i=0; i<resolution; i++) {
