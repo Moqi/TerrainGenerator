@@ -2,62 +2,64 @@ using UnityEngine;
 using System.Collections;
 
 public class TerrainGenerator : MonoBehaviour {
-	
-	Color32[] cols;
-	int width=2048;
-	int height=2048;
-	float WidthHeightP;
-	public int GRAIN=8;
-	Texture2D texture;
+
 	public float R;
+	public int GRAIN=8;
+	public bool FLAT = false;
+	public GameObject player;
+	public Material material;
+
+	private int width=2048;
+	private int height=2048;
+	private float WH;
+	private Color32[] cols;
+	private Texture2D texture;
+
 	
 	void Start () 
 	{
-		Terrain terrain = FindObjectOfType<Terrain> ();
+		//All-script variables
 		int resolution = width;
+		WH = (float)width+height;
+
+		//Setting terrain heightmap
+		Terrain terrain = FindObjectOfType<Terrain> ();
 		float[,] heights = new float[resolution,resolution]; 
-		WidthHeightP= (float)width+height;
+
+		//Making terrain heightmap
 		texture = new Texture2D(width, height);
 		cols = new Color32[width*height];
 		drawPlasma(width, height);
 		texture.SetPixels32(cols);
-		for (int i=0; i<width; i++) {
-			for (int k=0;k<height; k++){
+		texture.Apply();
+
+		//Starting shader
+		material.SetTexture ("_HeightTex", texture);
+
+		//Changing terrain from heightmap
+		for (int i=0; i<resolution; i++) {
+			for (int k=0;k<resolution; k++){
 				heights[i,k] = texture.GetPixel(i,k).grayscale*R;
 			}
 		}
-		
+
+		//Applying changes
 		terrain.terrainData.size = new Vector3(width, width, height);
 		terrain.terrainData.heightmapResolution = resolution;
 		terrain.terrainData.SetHeights(0, 0, heights);
+
+		//Creating player
+		Instantiate(player, new Vector3(width/2,200, height/2), Quaternion.identity);
 	}
-	
-	void Update () 
-	{
-		if (Input.GetMouseButtonDown(0))
-		{
-			Terrain terrain = FindObjectOfType<Terrain> ();
-			int resolution = width;
-			float[,] heights = new float[resolution,resolution]; 
-			texture = new Texture2D(width, height);
-			cols = new Color32[width*height];
-			drawPlasma(width, height);
-			texture.SetPixels32(cols);
-			for (int i=0; i<width; i++) {
-				for (int k=0;k<height; k++){
-					heights[i,k] = texture.GetPixel(i,k).grayscale*R;
-				}
-			}
-			
-			terrain.terrainData.size = new Vector3(width, width, height);
-			terrain.terrainData.heightmapResolution = resolution;
-			terrain.terrainData.SetHeights(0, 0, heights);
-			
-		}
+
+	void OnGUI(){
+		//Drawing "map"
+		GUI.DrawTexture (new Rect (0, 0, 200, 200), texture);
 	}
+
 	float displace(float num)
 	{
-		float max = num / WidthHeightP * GRAIN;
+		float max = num / WH * GRAIN;
 		return Random.Range(-0.5f, 0.5f)* max;
 	}
 	
@@ -91,15 +93,17 @@ public class TerrainGenerator : MonoBehaviour {
 			float edge2 = (c2 + c3) * 0.5f;
 			float edge3 = (c3 + c4) * 0.5f;
 			float edge4 = (c4 + c1) * 0.5f;
-			
-			if (middle <= 0)
-			{
-				middle = 0;
-			}
+
+			if(!FLAT){
+				if (middle <= 0)
+				{
+					middle = 0;
+				}
 			else if (middle > 1.0f)
-			{
-				middle = 1.0f;
-			}                
+				{
+					middle = 1.0f;
+				}
+			}
 			divide(x, y, newWidth, newHeight, c1, edge1, middle, edge4);
 			divide(x + newWidth, y, newWidth, newHeight, edge1, c2, edge2, middle);
 			divide(x + newWidth, y + newHeight, newWidth, newHeight, middle, edge2, c3, edge3);
