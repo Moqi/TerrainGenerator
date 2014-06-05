@@ -12,4 +12,6 @@ For example if GRAIN = 8 and R = 0.01 it will be a desert
   
 You can easily change the script and achieve the best realism
 
+Shader is comming soon!
+
 Good luck!!
