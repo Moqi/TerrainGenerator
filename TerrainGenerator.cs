@@ -7,9 +7,9 @@ public class TerrainGenerator : MonoBehaviour {
 	int width=2048;
 	int height=2048;
 	float WidthHeightP;
-	int GRAIN=4;
+	public int GRAIN=8;
 	Texture2D texture;
-	float R;
+	public float R;
 	
 	void Start () 
 	{
@@ -21,13 +21,12 @@ public class TerrainGenerator : MonoBehaviour {
 		cols = new Color32[width*height];
 		drawPlasma(width, height);
 		texture.SetPixels32(cols);
-		R = 0.1f;
 		for (int i=0; i<width; i++) {
 			for (int k=0;k<height; k++){
 				heights[i,k] = texture.GetPixel(i,k).grayscale*R;
 			}
 		}
-						
+		
 		terrain.terrainData.size = new Vector3(width, width, height);
 		terrain.terrainData.heightmapResolution = resolution;
 		terrain.terrainData.SetHeights(0, 0, heights);
@@ -38,23 +37,22 @@ public class TerrainGenerator : MonoBehaviour {
 		if (Input.GetMouseButtonDown(0))
 		{
 			Terrain terrain = FindObjectOfType<Terrain> ();
-			int resolution = 128;
+			int resolution = width;
 			float[,] heights = new float[resolution,resolution]; 
 			texture = new Texture2D(width, height);
 			cols = new Color32[width*height];
 			drawPlasma(width, height);
 			texture.SetPixels32(cols);
-			R = 0.2f;
-			for (int i=0; i<128; i++) {
-				for (int k=0;k<128; k++){
+			for (int i=0; i<width; i++) {
+				for (int k=0;k<height; k++){
 					heights[i,k] = texture.GetPixel(i,k).grayscale*R;
 				}
 			}
 			
-			terrain.terrainData.size = new Vector3(width, width, width);
+			terrain.terrainData.size = new Vector3(width, width, height);
 			terrain.terrainData.heightmapResolution = resolution;
 			terrain.terrainData.SetHeights(0, 0, heights);
-
+			
 		}
 	}
 	float displace(float num)
